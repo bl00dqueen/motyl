@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Motyl — мессенджер</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d55bd">
+<meta name="description" content="Motyl — самостоятельный мессенджер в духе MSN Messenger. Свой сервер, свой клиент, своя бабочка.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%8B%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<svg class="svg-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="wingA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a8dbff"/>
+      <stop offset="0.5" stop-color="#4e9ffa"/>
+      <stop offset="1" stop-color="#1a5fd0"/>
+    </linearGradient>
+    <linearGradient id="wingB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6db8ff"/>
+      <stop offset="1" stop-color="#0e4cae"/>
+    </linearGradient>
+  </defs>
+  <symbol id="butterfly" viewBox="0 0 128 128">
+    <g fill="url(#wingA)" stroke="#ffffff" stroke-opacity=".4" stroke-width="1.5">
+      <path d="M62 58 C50 28 22 12 12 26 C2 40 18 62 48 68 Z"/>
+      <path d="M66 58 C78 28 106 12 116 26 C126 40 110 62 80 68 Z"/>
+    </g>
+    <g fill="url(#wingB)" stroke="#ffffff" stroke-opacity=".28" stroke-width="1.2">
+      <path d="M62 66 C44 70 24 88 34 102 C44 116 60 92 63 72 Z"/>
+      <path d="M66 66 C84 70 104 88 94 102 C84 116 68 92 65 72 Z"/>
+    </g>
+    <g fill="#e5f3ff" opacity=".5">
+      <circle cx="34" cy="42" r="7"/><circle cx="94" cy="42" r="7"/>
+      <circle cx="44" cy="62" r="3.5"/><circle cx="84" cy="62" r="3.5"/>
+    </g>
+    <ellipse cx="64" cy="72" rx="4.5" ry="22" fill="#123a67"/>
+    <circle cx="64" cy="48" r="7" fill="#123a67"/>
+    <path d="M61 43 C56 34 50 30 45 28 M67 43 C72 34 78 30 83 28" stroke="#123a67" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<!-- ── Экран входа ─────────────────────────────────────────────────────── -->
+<section id="auth" class="auth-screen">
+  <div class="auth-blob b1"></div>
+  <div class="auth-blob b2"></div>
+  <div class="auth-blob b3"></div>
+
+  <div class="auth-wrap">
+    <div class="auth-hero">
+      <div class="brand-lockup">
+        <svg class="logo xl" viewBox="0 0 128 128" aria-hidden="true"><use href="#butterfly"></use></svg>
+        <div>
+          <h1>Motyl</h1>
+          <p class="tagline">Крылья для твоих сообщений</p>
+        </div>
+      </div>
+
+      <p class="hero-text">
+        Свой мессенджер в духе MSN / Windows Live Messenger: список контактов,
+        статусы, смайлики, nudge и тёплый ламповый чат. Только ваш сервер,
+        ваши данные и никаких аккаунтов в чужом облаке.
+      </p>
+
+      <ul class="feature-list">
+        <li><span>🪟</span><div><b>Как в 2007-м</b><small>Окна бесед, статусы, «печатает…», nudge</small></div></li>
+        <li><span>🖥️</span><div><b>Терминальный клиент</b><small>Общайтесь из консоли: <code>node tui.js</code></small></div></li>
+        <li><span>🔒</span><div><b>Данные у вас</b><small>Один JSON-файл на вашем диске</small></div></li>
+        <li><span>⚡</span><div><b>Без зависимостей</b><small>Только Node.js и стандартная библиотека</small></div></li>
+      </ul>
+
+      <div class="hero-note">
+        <span class="pulse-dot"></span>
+        <span id="auth-server">Сервер: <b>—</b></span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-head">
+        <div class="mini-brand">
+          <svg class="logo sm" viewBox="0 0 128 128" aria-hidden="true"><use href="#butterfly"></use></svg>
+          <span>Motyl</span>
+        </div>
+        <span class="auth-status" id="auth-health">проверяем сервер…</span>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" data-tab="login" role="tab">Вход</button>
+        <button type="button" class="auth-tab" data-tab="register" role="tab">Регистрация</button>
+      </div>
+
+      <form id="login-form" class="auth-form" autocomplete="on">
+        <label class="field">
+          <span>Логин</span>
+          <input name="login" autocomplete="username" required maxlength="20" placeholder="например, alice">
+        </label>
+        <label class="field">
+          <span>Пароль</span>
+          <input name="password" type="password" autocomplete="current-password" required minlength="4" placeholder="••••••••">
+        </label>
+        <button class="btn primary block" type="submit">Войти в сеть</button>
+        <p class="form-note">Впервые здесь? <button type="button" class="link-btn" data-tab-link="register">Создайте аккаунт</button></p>
+      </form>
+
+      <form id="register-form" class="auth-form hidden" autocomplete="on">
+        <label class="field">
+          <span>Логин</span>
+          <input name="login" autocomplete="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_.\-]{3,20}" placeholder="латиница, 3–20 символов">
+        </label>
+        <label class="field">
+          <span>Как вас зовут</span>
+          <input name="displayName" autocomplete="nickname" maxlength="32" placeholder="Имя в списке контактов">
+        </label>
+        <label class="field">
+          <span>Пароль</span>
+          <input name="password" type="password" autocomplete="new-password" required minlength="4" maxlength="100" placeholder="минимум 4 символа">
+        </label>
+        <button class="btn primary block" type="submit">Создать аккаунт</button>
+        <p class="form-note">Уже есть аккаунт? <button type="button" class="link-btn" data-tab-link="login">Войти</button></p>
+      </form>
+
+      <div id="auth-error" class="form-error" role="alert"></div>
+
+      <div class="auth-card-foot">
+        <span>v1.0 · Windows Live-настроение</span>
+        <span id="auth-meta">—</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Основное приложение ─────────────────────────────────────────────── -->
+<section id="main" class="app hidden">
+  <header class="appbar">
+    <div class="appbar-brand">
+      <svg class="logo sm" viewBox="0 0 128 128" aria-hidden="true"><use href="#butterfly"></use></svg>
+      <div>
+        <b>Motyl</b>
+        <span>messenger</span>
+      </div>
+    </div>
+
+    <div class="appbar-center">
+      <div class="conn" id="conn">
+        <i class="conn-dot"></i>
+        <span class="conn-label">Подключение…</span>
+      </div>
+    </div>
+
+    <div class="appbar-right">
+      <span class="clock" id="clock">--:--</span>
+      <button class="icon-btn" id="btn-help" title="Подсказки" aria-label="Подсказки">?</button>
+      <button class="icon-btn" id="btn-settings-top" title="Настройки" aria-label="Настройки">⚙</button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="me-card">
+        <button class="avatar lg me-avatar" id="me-avatar" title="Изменить профиль" aria-label="Изменить профиль"></button>
+        <div class="me-body">
+          <div class="me-name-row">
+            <b id="me-name">—</b>
+            <span class="me-login" id="me-login"></span>
+          </div>
+          <div class="status-row">
+            <span class="status-dot online" id="me-dot"></span>
+            <select id="status-select" aria-label="Мой статус">
+              <option value="online">В сети</option>
+              <option value="away">Нет на месте</option>
+              <option value="busy">Не беспокоить</option>
+              <option value="invisible">Невидимка</option>
+            </select>
+          </div>
+          <input class="status-input" id="status-text" maxlength="80" placeholder="Что нового?">
+        </div>
+      </div>
+
+      <div class="contact-tools">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input id="contact-filter" placeholder="Поиск контактов" autocomplete="off">
+        </div>
+        <button class="btn icon" id="btn-add" title="Добавить контакт" aria-label="Добавить контакт">＋</button>
+      </div>
+
+      <div class="contact-scroll" id="contact-scroll">
+        <div id="contact-list" class="contact-list"></div>
+      </div>
+
+      <div class="sidebar-foot">
+        <div class="server-meta" id="server-meta">Motyl · подключение…</div>
+        <div class="sidebar-links">
+          <button class="link-btn" id="btn-settings">Настройки</button>
+          <span>·</span>
+          <button class="link-btn" id="btn-logout">Выйти</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="desktop" id="desktop">
+      <div class="desktop-art" aria-hidden="true">
+        <svg class="watermark" viewBox="0 0 128 128"><use href="#butterfly"></use></svg>
+        <div class="desktop-glow"></div>
+      </div>
+
+      <div class="empty-state" id="empty-state">
+        <svg class="logo xxl" viewBox="0 0 128 128" aria-hidden="true"><use href="#butterfly"></use></svg>
+        <h2>С возвращением в Motyl</h2>
+        <p>Щёлкните по контакту слева, чтобы открыть беседу.</p>
+        <p class="hint">Нет друзей? Нажмите «＋» и добавьте кого-нибудь по логину.</p>
+        <div class="empty-chips">
+          <span>⚡ nudge</span><span>(H) смайлики</span><span>💾 своя история</span>
+        </div>
+      </div>
+
+      <div class="taskbar" id="taskbar" aria-label="Открытые беседы"></div>
+    </main>
+  </div>
+</section>
+
+<div id="modals"></div>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

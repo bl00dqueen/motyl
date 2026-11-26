@@ -1,0 +1,27 @@
+{
+  "name": "motyl-messenger",
+  "version": "1.0.0",
+  "description": "Motyl — самостоятельный мессенджер в духе MSN Messenger: веб-клиент, терминальный клиент и сервер без внешних зависимостей.",
+  "main": "server.js",
+  "type": "commonjs",
+  "bin": {
+    "motyl": "tui.js"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "demo": "node server.js --demo",
+    "tui": "node tui.js",
+    "test": "node tests/smoke.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "messenger",
+    "msn",
+    "chat",
+    "websocket",
+    "terminal"
+  ],
+  "license": "MIT"
+}
